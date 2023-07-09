@@ -6,7 +6,7 @@ const LoadMoreBtn = ({ onLoadMore }) => (
     Load more
   </button>
 );
-export default LoadMoreBtn;
 LoadMoreBtn.propTypes = {
   onLoadMore: propTypes.func.isRequired,
 };
+export default LoadMoreBtn;
