@@ -63,7 +63,7 @@ export const App = props => {
       }
     };
     fetchImagesData();
-  }, [query]);
+  }, [query]); // eslint-disable-line react-hooks/exhaustive-deps
   // ? // Функція LoadMore що завантажує більше результатів;
   const onLoadMore = async () => {
     try {
