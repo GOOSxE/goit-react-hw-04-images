@@ -9,25 +9,6 @@ export const fetchImages = async (searchQuery, page, perPage) => {
   );
   return data;
 };
-// export default class ImageApiService {
-//   constructor() {
-//     this.page = 1;
-//     this.searchQuery = '';
-//     this.perPage = 12;
-//   }
-//   async fetchImages() {
-//     const { data } = await axios.get(
-//       `${URL}?key=${API_KEY}&q=${this.searchQuery}&page=${this.page}&per_page=${this.perPage}&image-type=photo&orientation=horizontal&safesearch=true`
-//     );
-//     return data;
-//   }
-//   resetPageNumber() {
-//     this.page = 1;
-//   }
-//   incrementPageNumber() {
-//     this.page += 1;
-//   }
-// }
 fetchImages.propTypes = {
   searchQuery: propTypes.string.isRequired,
   page: propTypes.number.isRequired,
