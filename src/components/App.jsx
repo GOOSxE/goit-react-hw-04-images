@@ -7,7 +7,7 @@ import LoadMoreBtn from './Button/Button.jsx';
 import Loader from './Loader/Loader.jsx';
 import Modal from './Modal/Modal.jsx';
 import Notification from './Notification/Notification.jsx';
-// *
+// ? // Основний функціональний компонент App з стейтом, хуками і функціями що передаються в компоненти ;
 export const App = props => {
   const [query, setQuery] = useState(null);
   const [images, setImages] = useState([]);
@@ -28,13 +28,14 @@ export const App = props => {
     setIsMidalOpen(false);
     setLargeImageURL('');
   };
-  // ? // Функція при сабміті форми
+  // ? // Функція при сабміті форми ;
   const onFormSubmit = query => {
     setQuery(query);
     setPage(1);
     setImages([]);
+    setError(null);
   };
-  // ? // Хук useEffect що робить фетч і повертає data ;
+  // ? // Хук useEffect що залежний від оновлення query та page, і робить фетч, що повертає data ;
   useEffect(() => {
     const fetchImagesData = async () => {
       if (query === null) {
@@ -46,14 +47,14 @@ export const App = props => {
       } else {
         setIsloading('true');
         try {
-          const data = await fetchImages(query, page, perPage);
+          const data = await fetchImages(query, page);
           if (data.hits.length === 0) {
             alert('No images found!');
             throw new Error('No images found!');
+          } else {
+            setImages(prevPhotos => [...prevPhotos, ...data.hits]);
+            setTotalHits(data.totalHits);
           }
-          setImages(data.hits);
-          setTotalHits(data.totalHits);
-          setPage(page + 1);
         } catch (error) {
           setError(error);
           console.log(error);
@@ -63,34 +64,21 @@ export const App = props => {
       }
     };
     fetchImagesData();
-  }, [query]); // eslint-disable-line react-hooks/exhaustive-deps
-  // ? // Функція LoadMore що завантажує більше результатів;
-  const onLoadMore = async () => {
-    try {
-      const data = await fetchImages(query, page, perPage);
-      if (page === Math.ceil(totalHits / perPage) || data.hits.length === 0) {
-        setError('400');
-        throw new Error('Request failed with status code 400');
-      } else {
-        setImages([...images, ...data.hits]);
-        setPage(page + 1);
-      }
-    } catch (error) {
-      setError(error);
-      console.log(error);
-    }
+  }, [query, page]);
+  // ? // Функція LoadMore що збільшує значення page на 1, завдяки якому спрацьовує useEffect ;
+  const onLoadMore = () => {
+    setPage(page + 1);
   };
-
   const totalPages = Math.ceil(totalHits / perPage);
   return (
     <div className="App">
       <SearchBar onSubmit={onFormSubmit} />
-      {images.length === 0 && !isLoading && (
+      {images.length === 0 && !isLoading && !error && (
         <Notification>There is no images. Write something!</Notification>
       )}
       {error && (
         <Notification>
-          Oops! Something went wrong. Please, try again!
+          Oops, something went wrong! Please, try again!
         </Notification>
       )}
       {isLoading && <Loader />}
